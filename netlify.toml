@@ -8,7 +8,7 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
     X-Content-Type-Options = "nosniff"
- Referer-Policy = "no-referrer"
+ Referer-Policy = "Referrer-Policy"
  kehoachsanxuatvanhucaunhanluc/
 │
 ├── public/
