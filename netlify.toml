@@ -1,0 +1,11 @@
+# Netlify: site tĩnh, không cần build
+[build]
+  publish = "."
+
+# Luôn tải bản mới nhất của trang (tránh trình duyệt giữ bản cũ)
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"
