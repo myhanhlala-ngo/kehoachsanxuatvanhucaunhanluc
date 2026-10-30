@@ -9,12 +9,14 @@
     Cache-Control = "public, max-age=0, must-revalidate"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "no-referrer"
-[[redirects]]
-  from = "/api/db"
-  to = "/.netlify/functions/db"
-  status = 200
-
-[[redirects]]
-  from = "/api/db/*"
-  to = "/.netlify/functions/db/:splat"
-  status = 200
+kehoachsanxuatvanhucaunhanluc/
+│
+├── public/
+│   └── index.html
+│
+├── netlify/
+│   └── functions/
+│       └── db.mjs
+│
+├── netlify.toml
+└── package.json
