@@ -1,19 +1,14 @@
 [build]
-  publish = "."
-  command = ""
+  publish = "public"
+  functions = "netlify/functions"
 
 [functions]
-  directory = "netlify/functions"
   node_bundler = "esbuild"
 
+# Luôn tải bản mới nhất của trang
 [[headers]]
   for = "/*"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "no-referrer"
-
-[[redirects]]
-  from = "/api/db"
-  to = "/.netlify/functions/db"
-  status = 200
