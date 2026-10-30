@@ -1,22 +1,21 @@
-# Netlify: site tĩnh, không cần build
+# Netlify configuration
+
 [build]
   publish = "."
+  command = ""
 
-# Luôn tải bản mới nhất của trang (tránh trình duyệt giữ bản cũ)
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
 [[headers]]
   for = "/*"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
     X-Content-Type-Options = "nosniff"
- Referer-Policy = "Referrer-Policy"
-kehoachsanxuatvanhucaunhanluc/
-│
-├── public/
-│   └── index.html
-│
-├── netlify/
-│   └── functions/
-│       └── db.mjs
-│
-├── netlify.toml
-└── package.json
+    Referrer-Policy = "no-referrer"
+
+[[redirects]]
+  from = "/api/db"
+  to = "/.netlify/functions/db"
+  status = 200
