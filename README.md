@@ -1,20 +1,34 @@
-# Daily HC – Assembly (Kế hoạch SX · Nhân lực · Hiện trạng nhân lực)
+# Kế hoạch sản xuất & nhu cầu nhân lực – Assembly
 
-Dashboard một file (`index.html`), không cần build, không cần máy chủ.
+```
+kehoachsanxuatvanhucaunhanluc/
+├── public/index.html           ← dashboard (đã kèm đầy đủ dữ liệu: 21 ngày, từ 01/10 đến 29/10/2026)
+├── netlify/functions/db.mjs    ← "cơ sở dữ liệu chung" (Netlify Function + Netlify Blobs)
+├── netlify.toml                ← cấu hình Netlify
+└── package.json                ← khai báo thư viện @netlify/blobs
+```
 
-## Đưa lên Netlify (cách nhanh nhất)
-1. Vào https://app.netlify.com/drop
-2. Kéo thả file `netlify-dailyhc.zip` (hoặc cả thư mục này) vào khung.
-3. Netlify cấp địa chỉ dạng `https://xxxx.netlify.app` – mở là dùng được.
+## Cách hoạt động
+- Mở trang → trang tự gọi `/.netlify/functions/db` để tải dữ liệu chung.
+- **Lần đầu** (kho dữ liệu còn trống) trang sẽ tự đưa dữ liệu có sẵn trong `index.html` lên kho.
+- Ai sửa số liệu → khoảng 1 giây sau tự lưu lên kho; các máy khác tự cập nhật sau tối đa 10 giây.
+- Huy hiệu "☁ Đã đồng bộ …" ở đầu trang cho biết trạng thái.
+- Mở file `index.html` trực tiếp trên máy (không qua web) thì đồng bộ tắt, vẫn dùng như file đơn bình thường.
 
-## Đưa lên GitHub rồi nối với Netlify
-1. Tạo repo mới trên GitHub (ví dụ `daily-hc`), upload `index.html`, `netlify.toml`, `README.md`, `.gitignore`.
-2. Netlify → *Add new site* → *Import an existing project* → chọn repo.
-3. Build command: để trống · Publish directory: `.` → *Deploy*.
-4. Mỗi lần thay `index.html` và commit, Netlify tự cập nhật.
+## Đưa lên GitHub + Netlify (khuyên dùng – chắc chắn cài được thư viện)
+1. Tạo repo GitHub, upload toàn bộ nội dung thư mục này (giữ nguyên cấu trúc thư mục).
+2. Netlify → **Add new site → Import an existing project** → chọn repo.
+3. Netlify tự đọc `netlify.toml` (Publish directory `public`, Functions `netlify/functions`) → **Deploy**.
+4. Mở địa chỉ `https://tên-site.netlify.app` và bấm vào huy hiệu ☁ lần đầu để nhập tên của chị (ghi vào lịch sử sửa).
 
-## Lưu ý khi dùng trên web
-- Dữ liệu chị sửa lưu trong **localStorage của từng trình duyệt/máy** (không chia sẻ tự động).
-  Muốn nhiều người cùng xem dữ liệu chung thì dùng nút đồng bộ Google Sheets trong trang (nếu đã cấu hình), hoặc bấm **“Tải HTML mới nhất”** để lấy file kèm dữ liệu rồi thay `index.html` và deploy lại.
-- Nút **“Tự động lưu HTML”** (ghi đè file trong thư mục) chỉ hợp khi mở file từ máy (Chrome/Edge); trên web nên dùng “Tải HTML mới nhất”.
-- Sau khi deploy bản mới mà vẫn thấy dữ liệu cũ: mở cửa sổ ẩn danh hoặc xóa Local Storage của trang.
+## Hoặc kéo thả (nếu dùng Netlify CLI)
+```
+npm install
+npx netlify deploy --prod
+```
+
+## Lưu ý
+- Ai có đường link đều xem và sửa được dữ liệu. Nếu cần hạn chế, bật *Site settings → Access control → Password protection* của Netlify.
+- Muốn cập nhật dữ liệu gốc: bấm **"Tải HTML mới nhất"** trong trang, đổi tên file thành `index.html` và thay vào `public/`. (Dữ liệu trên kho chung vẫn được ưu tiên.)
+- Dữ liệu trên kho chỉ nhận các khoá `day:YYYY-MM-DD`, `hcTO`, `writer`.
+- Nút "Tự động lưu HTML" chỉ hợp khi dùng file trên máy (Chrome/Edge).

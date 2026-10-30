@@ -2977,9 +2977,9 @@ const SAMPLE = {
 </script>
 <script id="cloud-sync">
 /* ===== 클라우드 동기화 · Đồng bộ dữ liệu chung qua Google Sheets (không cần máy chủ) =====
-   Dán link Web App của Apps Script vào SYNC_URL bên dưới rồi upload lại lên Netlify.
+   Dữ liệu chung được lưu bằng Netlify Function (netlify/functions/db.mjs) + Netlify Blobs.
    Mỗi ngày báo cáo = 1 dòng trong Sheet. Ai mở link cũng thấy & sửa cùng một dữ liệu. */
-var SYNC_URL = '';            // ← DÁN LINK https://script.google.com/macros/s/.../exec VÀO ĐÂY
+var SYNC_URL = (/^https?:/.test(location.protocol) ? '/.netlify/functions/db' : '');   // trên Netlify: dùng hàm db.mjs; mở file trên máy: tắt            // ← DÁN LINK https://script.google.com/macros/s/.../exec VÀO ĐÂY
 var SYNC_POLL_MS = 10000;     // kiểm tra thay đổi của người khác mỗi 10 giây
 
 (function () {
