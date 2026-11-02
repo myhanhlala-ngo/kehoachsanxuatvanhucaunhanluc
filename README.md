@@ -1,34 +1,30 @@
-# Kế hoạch sản xuất & nhu cầu nhân lực – Assembly
+# Daily HC – Assembly (Cloudflare Pages + D1)
 
-```
-kehoachsanxuatvanhucaunhanluc/
-├── public/index.html           ← dashboard (đã kèm đầy đủ dữ liệu: 21 ngày, từ 01/10 đến 29/10/2026)
-├── netlify/functions/db.mjs    ← "cơ sở dữ liệu chung" (Netlify Function + Netlify Blobs)
-├── netlify.toml                ← cấu hình Netlify
-└── package.json                ← khai báo thư viện @netlify/blobs
-```
+Dashboard kế hoạch sản xuất & nhu cầu nhân lực, dữ liệu dùng chung nhiều máy, có đăng nhập phân quyền, sao lưu/khôi phục.
 
-## Cách hoạt động
-- Mở trang → trang tự gọi `/.netlify/functions/db` để tải dữ liệu chung.
-- **Lần đầu** (kho dữ liệu còn trống) trang sẽ tự đưa dữ liệu có sẵn trong `index.html` lên kho.
-- Ai sửa số liệu → khoảng 1 giây sau tự lưu lên kho; các máy khác tự cập nhật sau tối đa 10 giây.
-- Huy hiệu "☁ Đã đồng bộ …" ở đầu trang cho biết trạng thái.
-- Mở file `index.html` trực tiếp trên máy (không qua web) thì đồng bộ tắt, vẫn dùng như file đơn bình thường.
+## Cấu trúc
+- `public/index.html` – giao diện (giữ nguyên UI, tính kế hoạch/nhân lực, UPH nằm trong dữ liệu từng ngày nên được lưu & đồng bộ)
+- `functions/api/db.js` – API đọc/ghi D1 (all, since, backup, set, restore)
+- `functions/api/login.js`, `functions/_lib/auth.js` – đăng nhập + phân quyền
+- `schema.sql` – bảng `kv` (dữ liệu) và `hist` (20 phiên bản gần nhất mỗi khoá)
 
-## Đưa lên GitHub + Netlify (khuyên dùng – chắc chắn cài được thư viện)
-1. Tạo repo GitHub, upload toàn bộ nội dung thư mục này (giữ nguyên cấu trúc thư mục).
-2. Netlify → **Add new site → Import an existing project** → chọn repo.
-3. Netlify tự đọc `netlify.toml` (Publish directory `public`, Functions `netlify/functions`) → **Deploy**.
-4. Mở địa chỉ `https://tên-site.netlify.app` và bấm vào huy hiệu ☁ lần đầu để nhập tên của chị (ghi vào lịch sử sửa).
+## Triển khai
+1. `npm install`
+2. `npx wrangler login`
+3. `npx wrangler d1 create dailyhc` → chép `database_id` vào `wrangler.toml`
+4. `npm run db:init` (tạo bảng trên D1)
+5. Tạo Pages project: `npx wrangler pages project create dailyhc --production-branch main`
+6. Đặt mật khẩu (Dashboard → Pages → Settings → Variables & Secrets, hoặc `npx wrangler pages secret put NAME`):
+   `ADMIN_PASSWORD`, `EDITOR_PASSWORD`, `VIEWER_PASSWORD`, `SESSION_SECRET` (chuỗi ngẫu nhiên dài)
+   *Nếu không đặt mật khẩu nào → chế độ mở, ai cũng toàn quyền.*
+7. Pages → Settings → Bindings: D1 database, tên biến **`DB`** → `dailyhc`
+8. `npm run deploy` → mở URL `*.pages.dev` để test.
 
-## Hoặc kéo thả (nếu dùng Netlify CLI)
-```
-npm install
-npx netlify deploy --prod
-```
+## Phân quyền
+- viewer: chỉ xem (nút sửa/upload bị ẩn)
+- editor: sửa, upload Excel, nhập UPH
+- admin: như editor + sao lưu (`/api/db?action=backup`) và khôi phục (`action=restore`)
+Bấm huy hiệu ☁ góc trên để đăng nhập lại.
 
-## Lưu ý
-- Ai có đường link đều xem và sửa được dữ liệu. Nếu cần hạn chế, bật *Site settings → Access control → Password protection* của Netlify.
-- Muốn cập nhật dữ liệu gốc: bấm **"Tải HTML mới nhất"** trong trang, đổi tên file thành `index.html` và thay vào `public/`. (Dữ liệu trên kho chung vẫn được ưu tiên.)
-- Dữ liệu trên kho chỉ nhận các khoá `day:YYYY-MM-DD`, `hcTO`, `writer`.
-- Nút "Tự động lưu HTML" chỉ hợp khi dùng file trên máy (Chrome/Edge).
+## Test trước khi chính thức
+Mở bằng 2 thiết bị/trình duyệt: upload Excel, nhập UPH, sửa số → máy kia tự cập nhật sau ≤10 giây. Khi ổn thì gắn domain chính.

@@ -1,0 +1,8 @@
+name = "dailyhc"
+compatibility_date = "2024-11-01"
+pages_build_output_dir = "public"
+
+[[d1_databases]]
+binding = "DB"                        # tên biến trong code (đừng đổi)
+database_name = "dailyhc"
+database_id = "THAY-BANG-ID-D1-CUA-CHI"   # chạy: npx wrangler d1 create dailyhc  → copy database_id vào đây

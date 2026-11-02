@@ -1,9 +1,16 @@
 {
-  "name": "kehoachsanxuatvanhucaunhanluc",
+  "name": "dailyhc-cloudflare",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
-  "dependencies": {
-    "@netlify/blobs": "^10.0.0"
-  }
+  "description": "Dashboard kế hoạch sản xuất & nhân lực Assembly – Cloudflare Pages + Functions + D1",
+  "scripts": {
+    "db:create": "wrangler d1 create dailyhc",
+    "db:init": "wrangler d1 execute dailyhc --remote --file=./schema.sql",
+    "dev": "wrangler pages dev public --d1=DB",
+    "deploy": "wrangler pages deploy public --project-name=dailyhc"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  },
+  "type": "module"
 }
